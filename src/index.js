@@ -4,12 +4,40 @@ import './index.css';
 import App from './components/App/App';
 import reportWebVitals from './reportWebVitals';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+import { composeWithDevTools } from 'redux-devtools-extension';
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import thunkMiddleware from 'redux-thunk';
+
+import { createBrowserHistory } from 'history';
+import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
+
+import createRootReducer from './reducers';
+
+const history = createBrowserHistory();
+const store = createStore(
+  createRootReducer(history), // root reducer with router state
+  composeWithDevTools(
+    applyMiddleware(
+      routerMiddleware(history), // for dispatching history actions
+      thunkMiddleware
+    ),
+  ),
+)
+
+export function Index() {
+  return (
+    <React.StrictMode>
+    <Provider store={store}>
+      <ConnectedRouter history={history}>
+        <App />
+      </ConnectedRouter>
+    </Provider>
+  </React.StrictMode>
+  )
+}
+
+ReactDOM.render(<Index />, document.getElementById('root'));
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
