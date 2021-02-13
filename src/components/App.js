@@ -1,12 +1,12 @@
 import React from 'react';
 import Header from './Header';
-import Main from './Main';
+import Router from './Router';
 
 function App() {
   return (
     <React.Fragment>
       <Header />
-      <Main />
+      <Router />
     </React.Fragment>
   );
 }

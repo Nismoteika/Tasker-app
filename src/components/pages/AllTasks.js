@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
-import apiUrls from '../api';
 
-function Main() {
+
+
+import apiUrls from '../../api';
+
+function AllTasks() {
 
     const [tasks, setTasks] = useState([]);
     const [totalTasks, setTotalTasks] = useState();
@@ -28,5 +31,5 @@ function Main() {
     );
 }
   
-export default Main;
+export default AllTasks;
   
