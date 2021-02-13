@@ -5,7 +5,7 @@ function Main() {
         <h1>tasks</h1>
       </main>
     );
-  }
+}
   
-  export default Main;
+export default Main;
   
