@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import apiUrls from '../../api';
+import apiUrls from '../api';
 
 function Main() {
 
