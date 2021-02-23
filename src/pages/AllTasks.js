@@ -6,9 +6,9 @@ import Grid from '@material-ui/core/Grid';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 
-import TaskCard from '../TaskCard';
+import TaskCard from '../components/TaskCard';
 
-import apiUrls from '../../api';
+import apiUrls from '../api';
 
 const useStyles = makeStyles((theme) => ({
     root: {

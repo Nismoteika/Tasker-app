@@ -4,8 +4,8 @@ import { Switch, Route } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
 
-import AllTasks from './pages/AllTasks';
-import AddTask from './pages/AddTask';
+import AllTasks from '../pages/AllTasks';
+import AddTask from '../pages/AddTask';
 
 const useStyles = makeStyles({
     root: {
