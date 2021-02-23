@@ -31,6 +31,7 @@ function Header(props) {
             <div>
               <Button color="inherit" component={Link} to="/">Главная</Button>
               <Button color="inherit" component={Link} to="/task/add">Добавить задачу</Button>
+              <Button color="inherit" component={Link} to="/login">Вход</Button>
               {/* <Button color="inherit" component={Link} to="/task/edit">Изменить задачу</Button> */}
             </div>
           </Toolbar>
