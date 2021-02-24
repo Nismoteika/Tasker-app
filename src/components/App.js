@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import Header from './Header';
 import Router from './Router';
-import { getLocalToken } from '../actions/AuthAction';
+import { getCookieToken } from '../actions/AuthAction';
 
-function App({ getLocalToken }) {
+function App({ getCookieToken }) {
   useEffect(() => {
-    getLocalToken();
+    getCookieToken();
   })
 
   return (
@@ -18,7 +18,7 @@ function App({ getLocalToken }) {
 }
 
 const mapDispatchToProps = dispatch => ({
-  getLocalToken: () => dispatch(getLocalToken())
+  getCookieToken: () => dispatch(getCookieToken())
 })
 
 export default connect(null, mapDispatchToProps)(App);

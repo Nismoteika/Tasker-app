@@ -1,3 +1,4 @@
+import { push } from 'connected-react-router';
 import * as types from '../constants/AuthTypes';
 import apiUrls from '../api';
 
@@ -14,11 +15,17 @@ export const userLoginFetch = user => {
     })
       .then(resp => resp.json())
       .then(data => {
+        console.log(data);
         if (data.status === 'ok') {
           document.cookie = `auth_token=${data.message.token}`;
           dispatch(loginUser(data.message.token));
+          dispatch(push('/'));
         } else {
-          console.log('error');
+          console.log("lol")
+          dispatch(push({
+            pathname: '/login',
+            state: { response: data.message }
+          }))
         }
       })
   }
@@ -26,10 +33,12 @@ export const userLoginFetch = user => {
 
 export const getCookieToken = () => {
   return dispatch => {
-    const token = document.cookie.match(/auth_token=(.*)[;]{0,1}/)[1];
+    const token = document.cookie.match(/auth_token=(.*)[;]{0,1}/);
 
-    if (token.length > 0) {
-      dispatch(loginUser(token));
+    if (token) {
+      if (token[1].length > 0) {
+        dispatch(loginUser(token));
+      }
     }
   }
 }
@@ -37,4 +46,8 @@ export const getCookieToken = () => {
 const loginUser = token => ({
     type: types.LOGIN_USER,
     payload: token
+})
+
+export const logoutUser = () => ({
+  type: 'LOGOUT_USER'
 })

@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import Alert from '@material-ui/lab/Alert';
 
 import { userLoginFetch } from '../actions/AuthAction';
 
@@ -26,7 +27,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function Login(props) {
+function Login({ userLoginFetch, location }) {
     const classes = useStyles();
 
     const [username, setUsername] = useState('');
@@ -46,7 +47,7 @@ function Login(props) {
         formData.append('username', username);
         formData.append('password', password);
 
-        props.userLoginFetch(formData);
+        userLoginFetch(formData);
       };
 
     return (
@@ -74,11 +75,19 @@ function Login(props) {
         />
         <TextField
           id="standard-basic"
+          type="password"
           label="Пароль"
           name="password"
           value={password}
           onChange={onPasswordChange}
         />
+
+        { location.state.response !== undefined && location.state.response.username !== undefined && 
+                <Alert severity="error">{ location.state.response.username}</Alert> 
+            }
+        { location.state.response !== undefined && location.state.response.password !== undefined && 
+                <Alert severity="error">{location.state.response.password}</Alert> 
+            }
 
         <Button type="submit" variant="contained" color="primary">
           Войти
@@ -90,7 +99,7 @@ function Login(props) {
 }
   
 const mapDispatchToProps = dispatch => ({
-  userLoginFetch: userInfo => dispatch(userLoginFetch(userInfo))
+  userLoginFetch: userInfo => dispatch(userLoginFetch(userInfo)),
 })
 
 export default connect(null, mapDispatchToProps)(Login);
