@@ -1,12 +1,12 @@
 import { useState } from 'react';
+import { connect } from 'react-redux';
 
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import Alert from '@material-ui/lab/Alert';
 
-import apiUrls from '../api';
+import { userLoginFetch } from '../actions/AuthAction';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function Login() {
+function Login(props) {
     const classes = useStyles();
 
     const [username, setUsername] = useState('');
@@ -39,31 +39,14 @@ function Login() {
         setPassword(e.target.value);
     };
 
-    const [responseData, setResponseData] = useState(null);
-
-    const onSubmit = async e => {
+    const onSubmit = e => {
         e.preventDefault();
 
         let formData = new FormData();
         formData.append('username', username);
         formData.append('password', password);
 
-        let response = await fetch(apiUrls.base + 'login?developer=Nismoteika', {
-          crossDomain: true,
-          method: 'POST',
-          mimeType: 'multipart/form-data',
-          contentType: false,
-          processData: false,
-          dataType: "json",
-          body: formData,
-        });
-        
-        let data = await response.json();
-        setResponseData(data);
-
-        if(data.status === 'ok') {
-            document.cookie = `auth_token=${data.message.token}`;
-        }
+        props.userLoginFetch(formData);
       };
 
     return (
@@ -96,18 +79,6 @@ function Login() {
           value={password}
           onChange={onPasswordChange}
         />
-        
-        { responseData != null && responseData.status === 'ok' && 
-            <Alert severity="success">Авторизация прошла успешно</Alert> 
-            }
-        { responseData != null && responseData.status === 'error' && 
-            responseData.message.username != null && 
-                <Alert severity="error">{responseData.message.username}</Alert> 
-            }
-        { responseData != null && responseData.status === 'error' && 
-            responseData.message.password != null && 
-                <Alert severity="error">{responseData.message.password}</Alert> 
-            }
 
         <Button type="submit" variant="contained" color="primary">
           Войти
@@ -118,4 +89,8 @@ function Login() {
     );
 }
   
-export default Login;
+const mapDispatchToProps = dispatch => ({
+  userLoginFetch: userInfo => dispatch(userLoginFetch(userInfo))
+})
+
+export default connect(null, mapDispatchToProps)(Login);

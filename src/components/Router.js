@@ -7,6 +7,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import AllTasks from '../pages/AllTasks';
 import AddTask from '../pages/AddTask';
 import Login from '../pages/Login';
+import PrivateRoute from './PrivateRoute';
+import EditTask from '../pages/EditTask';
 
 const useStyles = makeStyles({
     root: {
@@ -24,7 +26,7 @@ function Router() {
             <Route exact path="/" component={AllTasks} />
 
             <Route exact path="/task/add" component={AddTask} />
-            {/* <Route exact path="/task/edit" component={AllTasks} /> */}
+            <PrivateRoute exact path="/task/edit/:id" component={EditTask} />
 
             <Route exact path="/login" component={Login} />
 
