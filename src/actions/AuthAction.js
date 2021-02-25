@@ -37,7 +37,7 @@ export const getCookieToken = () => {
 
     if (token) {
       if (token[1].length > 0) {
-        dispatch(loginUser(token));
+        dispatch(loginUser(token[1]));
       }
     }
   }
