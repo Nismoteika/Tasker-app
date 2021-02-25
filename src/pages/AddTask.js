@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { connect } from 'react-redux';
+import { push } from 'connected-react-router';
 
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -25,7 +27,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function AddTask() {
+function AddTask({ push }) {
     const classes = useStyles();
 
     const [username, setUsername] = useState('');
@@ -62,7 +64,11 @@ function AddTask() {
         });
     
         let result = await response.json();
-        console.log(result);
+        if(result.status === 'ok') {
+          push('/');
+        } else {
+          console.log('error');
+        }
       };
 
     return (
@@ -112,4 +118,4 @@ function AddTask() {
     );
 }
   
-export default AddTask;
+export default connect(null, { push })(AddTask);
