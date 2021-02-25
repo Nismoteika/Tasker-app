@@ -67,14 +67,14 @@ function Login({ userLoginFetch, location }) {
       >
         
         <TextField
-          id="standard-basic"
+          id="username-text_field"
           label="Пользователь"
           name="username"
           value={username}
           onChange={onUsernameChange}
         />
         <TextField
-          id="standard-basic"
+          id="password-text_field"
           type="password"
           label="Пароль"
           name="password"
