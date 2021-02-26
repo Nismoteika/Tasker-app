@@ -15,7 +15,6 @@ export const userLoginFetch = user => {
     })
       .then(resp => resp.json())
       .then(data => {
-        console.log(data);
         if (data.status === 'ok') {
           document.cookie = `auth_token=${data.message.token}`;
           dispatch(loginUser(data.message.token));

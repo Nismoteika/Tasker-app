@@ -27,6 +27,20 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
+function GetAlert({ state }) {
+  var errors = [];
+  if(state !== undefined) {
+    if(state.response !== undefined) {
+      if(state.response.username !== undefined)
+        errors.push(<Alert severity="error">{ state.response.username }</Alert>);
+
+      if(state.response.password !== undefined)
+        errors.push(<Alert severity="error">{ state.response.password }</Alert>);
+    }
+  }
+  return errors.map(item => item);
+}
+
 function Login({ userLoginFetch, location }) {
     const classes = useStyles();
 
@@ -82,12 +96,7 @@ function Login({ userLoginFetch, location }) {
           onChange={onPasswordChange}
         />
 
-        { location.state.response !== undefined && location.state.response.username !== undefined && 
-                <Alert severity="error">{ location.state.response.username}</Alert> 
-            }
-        { location.state.response !== undefined && location.state.response.password !== undefined && 
-                <Alert severity="error">{location.state.response.password}</Alert> 
-            }
+        <GetAlert state={location.state} />
 
         <Button type="submit" variant="contained" color="primary">
           Войти
