@@ -104,7 +104,9 @@ function AddTask({ push }) {
         <TextField
           id="standard-basic"
           label="Текст задачи"
-          name="action"
+          name="text"
+          multiline
+          rowsMax={4}
           value={text}
           onChange={onTextChange}
         />

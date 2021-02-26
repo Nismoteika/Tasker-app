@@ -90,6 +90,8 @@ function EditTask({ match, location, auth_token, push }) {
             id="standard-basic"
             label="Текст задачи"
             name="taskText"
+            multiline
+            rowsMax={4}
             value={taskText}
             onChange={onTaskTextChange}
           />
