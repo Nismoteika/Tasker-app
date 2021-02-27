@@ -67,7 +67,7 @@ function AddTask({ push }) {
         if(result.status === 'ok') {
           push('/');
         } else {
-          console.log('error');
+          console.log(result.message)
         }
       };
 
@@ -83,7 +83,6 @@ function AddTask({ push }) {
       <form
         onSubmit={onSubmit}
         className={classes.root}
-        noValidate
         autoComplete="off"
       >
         
@@ -92,13 +91,17 @@ function AddTask({ push }) {
           label="Пользователь"
           name="username"
           value={username}
+          required
           onChange={onUsernameChange}
         />
         <TextField
           id="standard-basic"
           label="E-mail"
+          type="email"
           name="email"
+          required
           value={email}
+          
           onChange={onEmailChange}
         />
         <TextField
@@ -108,6 +111,7 @@ function AddTask({ push }) {
           multiline
           rowsMax={4}
           value={text}
+          required
           onChange={onTextChange}
         />
 
