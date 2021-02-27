@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
 import Header from './Header';
 import Router from './Router';
+import { getCookieToken } from '../actions/AuthAction';
 
-function App() {
+function App({ getCookieToken }) {
+  useEffect(() => {
+    getCookieToken();
+  })
+
   return (
     <React.Fragment>
       <Header />
@@ -11,4 +17,8 @@ function App() {
   );
 }
 
-export default App;
+const mapDispatchToProps = dispatch => ({
+  getCookieToken: () => dispatch(getCookieToken())
+})
+
+export default connect(null, mapDispatchToProps)(App);

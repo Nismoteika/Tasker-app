@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-
-import { push } from 'connected-react-router';
 import { connect } from 'react-redux';
+import { logoutUser } from '../actions/AuthAction';
 
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -18,8 +17,14 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-function Header(props) {
+function Header({ getStoreToken, logoutUser, push }) {
   const classes = useStyles();
+
+  const handleLogout = () => {
+    document.cookie = 'auth_token=;expires=Thu, 01 Jan 1970 00:00:01 GMT';
+    window.location.href = '/';
+    logoutUser();
+  }
 
   return (
     <AppBar position="static">
@@ -31,7 +36,11 @@ function Header(props) {
             <div>
               <Button color="inherit" component={Link} to="/">Главная</Button>
               <Button color="inherit" component={Link} to="/task/add">Добавить задачу</Button>
-              {/* <Button color="inherit" component={Link} to="/task/edit">Изменить задачу</Button> */}
+              { getStoreToken === '' &&
+                <Button color="inherit" component={Link} to="/login">Вход</Button> }
+              { getStoreToken !== '' &&
+                <Button color="inherit" onClick={handleLogout}>Выход</Button> }
+              
             </div>
           </Toolbar>
       </Container>
@@ -39,4 +48,12 @@ function Header(props) {
   );
 }
 
-export default connect(null, { push })(Header);
+const mapStateToProps = state => ({
+  getStoreToken: state.auth.currentToken,
+});
+
+const mapDispatchToProps = dispatch => ({
+  logoutUser: () => dispatch(logoutUser())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

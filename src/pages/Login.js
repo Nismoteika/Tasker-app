@@ -1,11 +1,13 @@
 import { useState } from 'react';
+import { connect } from 'react-redux';
 
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import Alert from '@material-ui/lab/Alert';
 
-import apiUrls from '../../api';
+import { userLoginFetch } from '../actions/AuthAction';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -25,7 +27,21 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function AddTask() {
+function GetAlert({ state }) {
+  var errors = [];
+  if(state !== undefined) {
+    if(state.response !== undefined) {
+      if(state.response.username !== undefined)
+        errors.push(<Alert severity="error">{ state.response.username }</Alert>);
+
+      if(state.response.password !== undefined)
+        errors.push(<Alert severity="error">{ state.response.password }</Alert>);
+    }
+  }
+  return errors.map(item => item);
+}
+
+function Login({ userLoginFetch, location }) {
     const classes = useStyles();
 
     const [username, setUsername] = useState('');
@@ -33,36 +49,19 @@ function AddTask() {
         setUsername(e.target.value);
     };
   
-    const [email, setEmail] = useState('');
-    const onEmailChange = e => {
-        setEmail(e.target.value);
-    };
-  
-    const [text, setText] = useState('');
-    const onTextChange = e => {
-        setText(e.target.value);
+    const [password, setPassword] = useState('');
+    const onPasswordChange = e => {
+        setPassword(e.target.value);
     };
 
-    const onSubmit = async e => {
+    const onSubmit = e => {
         e.preventDefault();
 
         let formData = new FormData();
         formData.append('username', username);
-        formData.append('email', email);
-        formData.append('text', text);
+        formData.append('password', password);
 
-        let response = await fetch(apiUrls.base + 'create?developer=Nismoteika', {
-          crossDomain: true,
-          method: 'POST',
-          mimeType: 'multipart/form-data',
-          contentType: false,
-          processData: false,
-          dataType: "json",
-          body: formData,
-        });
-    
-        let result = await response.json();
-        console.log(result);
+        userLoginFetch(formData);
       };
 
     return (
@@ -73,7 +72,7 @@ function AddTask() {
       alignItems="center"
     >
       <Grid item md={3}>
-        <h3 style={{ textAlign: "center" }}>Новая задача</h3>
+        <h3 style={{ textAlign: "center" }}>Авторизация</h3>
       <form
         onSubmit={onSubmit}
         className={classes.root}
@@ -82,29 +81,25 @@ function AddTask() {
       >
         
         <TextField
-          id="standard-basic"
+          id="username-text_field"
           label="Пользователь"
           name="username"
           value={username}
           onChange={onUsernameChange}
         />
         <TextField
-          id="standard-basic"
-          label="E-mail"
-          name="email"
-          value={email}
-          onChange={onEmailChange}
-        />
-        <TextField
-          id="standard-basic"
-          label="Текст задачи"
-          name="action"
-          value={text}
-          onChange={onTextChange}
+          id="password-text_field"
+          type="password"
+          label="Пароль"
+          name="password"
+          value={password}
+          onChange={onPasswordChange}
         />
 
+        <GetAlert state={location.state} />
+
         <Button type="submit" variant="contained" color="primary">
-          Добавить
+          Войти
         </Button>
       </form>
       </Grid>
@@ -112,4 +107,8 @@ function AddTask() {
     );
 }
   
-export default AddTask;
+const mapDispatchToProps = dispatch => ({
+  userLoginFetch: userInfo => dispatch(userLoginFetch(userInfo)),
+})
+
+export default connect(null, mapDispatchToProps)(Login);
