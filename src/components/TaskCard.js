@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
@@ -21,12 +23,8 @@ const useStyles = makeStyles(() => ({
   title: {
     fontSize: 14,
   },
-  pos: {
-    marginBottom: 12,
-  },
-  linkEdit: {
-    marginBottom: 5,
-    marginRight: 10,
+  posSpan: {
+    paddingTop: 2,
   },
   successCircle: {
     color: 'yellowgreen'
@@ -43,22 +41,24 @@ function GetStatus({ statusCode }) {
       return <CheckCircleOutlineIcon className={classes.successCircle} />
     case 1:
       return (
-        <span>отредактирована админом
+        <Grid container>
+          <span className={classes.posSpan}>отредактирована админом</span>
           <AdjustIcon />
-        </span>
+        </Grid>
       );
     case 11:
       return (
-        <span>отредактирована админом
+        <Grid container>
+          <span className={classes.posSpan}>отредактирована админом</span>
           <CheckCircleOutlineIcon className={classes.successCircle} />
-        </span>
+        </Grid>
       );
     default:
       return <AdjustIcon />
   }
 }
 
-function TaskCard({ objectTask }) {
+function TaskCard({ objectTask, getStoreToken }) {
   const classes = useStyles();
 
   return (
@@ -73,13 +73,15 @@ function TaskCard({ objectTask }) {
         <Typography variant="body2" component="p">
           {objectTask.text === undefined ? "?" : objectTask.text}
         </Typography>
+        { getStoreToken !== '' &&
+            <Button variant="contained" color="primary" className={classes.linkEdit} component={Link} to={{ 
+              pathname: `/task/edit/${objectTask.id}`,
+              state: { objectTask: objectTask },
+              }}>
+              Редактировать {objectTask.id}
+            </Button>
+          }
         <div style={{float: 'right'}}>
-          <Button color="primary" className={classes.linkEdit} component={Link} to={{ 
-            pathname: `/task/edit/${objectTask.id}`,
-            state: { objectTask: objectTask },
-            }}>
-            Редактировать {objectTask.id}
-          </Button>
           <GetStatus statusCode={objectTask.status} />
         </div>
       </CardContent>
@@ -87,4 +89,8 @@ function TaskCard({ objectTask }) {
   );
 }
 
-export default TaskCard;
+const mapStateToProps = state => ({
+  getStoreToken: state.auth.currentToken,
+})
+
+export default connect(mapStateToProps, null)(TaskCard);
