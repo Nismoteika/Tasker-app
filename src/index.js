@@ -8,12 +8,12 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
 
-import { createBrowserHistory } from 'history';
+import { createHashHistory } from 'history';
 import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 
 import createRootReducer from './reducers';
 
-const history = createBrowserHistory();
+const history = createHashHistory();
 const store = createStore(
   createRootReducer(history), // root reducer with router state
   composeWithDevTools(
@@ -26,13 +26,11 @@ const store = createStore(
 
 export function Index() {
   return (
-    <React.StrictMode>
     <Provider store={store}>
       <ConnectedRouter history={history}>
         <App />
       </ConnectedRouter>
     </Provider>
-  </React.StrictMode>
   )
 }
 
