@@ -12,6 +12,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
 import apiUrls from '../api';
+import GetStatus from '../components/GetStatus';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,8 +27,8 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     minWidth: 120
   },
-  selectEmpty: {
-    marginTop: theme.spacing(2)
+  editStatus: {
+    color: 'grey',
   }
 }));
 
@@ -47,10 +48,23 @@ function EditTask({ match, location, auth_token, push }) {
   const onSubmit = async e => {
     e.preventDefault();
 
+    // task text is equal text in field || status already edited
+    var localStatus = taskStatus;
+    if (location.state.objectTask.text !== taskText
+      || location.state.objectTask.status === 1
+      || location.state.objectTask.status === 11) {
+      if (localStatus === 0) {
+        localStatus = 1;
+      } else if (localStatus === 10) {
+        localStatus = 11;
+      }
+    }
+
+    setTaskStatus(localStatus);
     let formData = new FormData();
     formData.append('token', auth_token);
     formData.append('text', taskText);
-    formData.append('status', taskStatus);
+    formData.append('status', localStatus);
 
     let response = await fetch(`${apiUrls.base}edit/${match.params.id}?developer=Nismoteika`, {
       crossDomain: true,
@@ -63,7 +77,7 @@ function EditTask({ match, location, auth_token, push }) {
     });
 
     let result = await response.json();
-    if(result.status === 'ok') {
+    if (result.status === 'ok') {
       push('/');
     } else {
       console.log('error');
@@ -73,19 +87,18 @@ function EditTask({ match, location, auth_token, push }) {
   return (
     <Grid
       container
-      direction="row"
+      direction="column"
       justify="center"
       alignItems="center"
     >
       <Grid item md={3}>
-        <h3 style={{ textAlign: "center" }}>Редактировать задачу { match.params.id }</h3>
+        <h3 style={{ textAlign: "center" }}>Редактировать задачу {match.params.id}</h3>
         <form
           onSubmit={onSubmit}
           className={classes.root}
           noValidate
           autoComplete="off"
         >
-
           <TextField
             id="standard-basic"
             label="Текст задачи"
@@ -104,15 +117,16 @@ function EditTask({ match, location, auth_token, push }) {
               onChange={onTaskStatusChange}
             >
               <MenuItem value={0}>Задача не выполнена</MenuItem>
-              <MenuItem value={1}>Задача не выполнена, отредактирована админом</MenuItem>
               <MenuItem value={10}>Задача выполнена</MenuItem>
-              <MenuItem value={11}>Задача отредактирована админом и выполнена</MenuItem>
             </Select>
           </FormControl>
 
+          <span>прошлое состояние:</span>
+          <GetStatus statusCode={location.state.objectTask.status} />
+
           <Button type="submit" variant="contained" color="primary">
             Изменить задачу
-        </Button>
+          </Button>
         </form>
       </Grid>
     </Grid>

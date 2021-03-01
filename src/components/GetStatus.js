@@ -2,6 +2,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import AdjustIcon from '@material-ui/icons/Adjust';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import EditIcon from '@material-ui/icons/Edit';
 
 const useStyles = makeStyles(() => ({
   posSpan: {
@@ -27,23 +28,19 @@ function GetStatus({ statusCode }) {
       break;
     case 1:
       completed = <AdjustIcon />;
-      edited = <span className={classes.posSpan}>отредактирована админом</span>;
+      edited = <EditIcon />;
       break;
     case 11:
       completed = <CheckCircleOutlineIcon className={classes.successCircle} />;
-      edited = <span className={classes.posSpan}>отредактирована админом</span>;
+      edited = <EditIcon />;
       break;
     default:
       break;
   }
   return (
     <Grid container>
-      <Grid item>
         {edited}
-      </Grid>
-      <Grid item>
         {completed}
-      </Grid>
     </Grid>
   )
 }
