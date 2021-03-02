@@ -44,7 +44,7 @@ function AllTasks({ totalTasks, tasks, getTasks }) {
         setPage(value);
     };
 
-    const pageCount = parseInt(totalTasks/3)+1;
+    const pageCount = Math.ceil(totalTasks/3);
 
     useEffect(() => {
         getTasks({page: page, sort_field: sortField, sort_direction: sortDirection});
