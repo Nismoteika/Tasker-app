@@ -2,14 +2,12 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
-import AdjustIcon from '@material-ui/icons/Adjust';
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import GetStatus from './GetStatus';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -23,40 +21,7 @@ const useStyles = makeStyles(() => ({
   title: {
     fontSize: 14,
   },
-  posSpan: {
-    paddingTop: 2,
-  },
-  successCircle: {
-    color: 'yellowgreen'
-  }
 }));
-
-function GetStatus({ statusCode }) {
-  const classes = useStyles();
-
-  switch (statusCode) {
-    case 0:
-      return <AdjustIcon />
-    case 10:
-      return <CheckCircleOutlineIcon className={classes.successCircle} />
-    case 1:
-      return (
-        <Grid container>
-          <span className={classes.posSpan}>отредактирована админом</span>
-          <AdjustIcon />
-        </Grid>
-      );
-    case 11:
-      return (
-        <Grid container>
-          <span className={classes.posSpan}>отредактирована админом</span>
-          <CheckCircleOutlineIcon className={classes.successCircle} />
-        </Grid>
-      );
-    default:
-      return <AdjustIcon />
-  }
-}
 
 function TaskCard({ objectTask, getStoreToken }) {
   const classes = useStyles();

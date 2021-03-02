@@ -1,1 +1,3 @@
 export const GET_TASKS = 'GET_TASKS';
+export const EDIT_TASK_SUCCESS = 'EDIT_TASK_SUCCESS';
+export const EDIT_TASK_ERROR = 'EDIT_TASK_ERROR';
