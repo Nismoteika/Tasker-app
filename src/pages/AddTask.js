@@ -1,127 +1,121 @@
 import { useState } from 'react';
 import { connect } from 'react-redux';
-import { push } from 'connected-react-router';
 
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import Alert from '@material-ui/lab/Alert';
 
-import apiUrls from '../api';
+import GetAlert from '../components/GetAlert';
+import { addTaskRequest } from '../actions/TaskAction';
 
 const useStyles = makeStyles(theme => ({
-    root: {
-      '& > *': {
-        display: 'flex',
-        flexFlow: 'column nowrap',
-        margin: theme.spacing(1),
-        width: '25ch'
-      }
-    },
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2)
-    }
+  form: {
+    display: 'flex',
+    flexFlow: 'column nowrap',
+  },
+  marginBot: {
+    marginBottom: theme.spacing(1),
+  },
+  submitBtn: {
+    margin: '0 auto',
+  }
 }));
 
-function AddTask({ push }) {
-    const classes = useStyles();
+function AddTask({ taskSuccess, taskErrors, addTaskRequest }) {
+  const classes = useStyles();
 
-    const [username, setUsername] = useState('');
-    const onUsernameChange = e => {
-        setUsername(e.target.value);
-    };
-  
-    const [email, setEmail] = useState('');
-    const onEmailChange = e => {
-        setEmail(e.target.value);
-    };
-  
-    const [text, setText] = useState('');
-    const onTextChange = e => {
-        setText(e.target.value);
-    };
+  const [username, setUsername] = useState('');
+  const onUsernameChange = e => {
+    setUsername(e.target.value);
+  };
 
-    const onSubmit = async e => {
-        e.preventDefault();
+  const [email, setEmail] = useState('');
+  const onEmailChange = e => {
+    setEmail(e.target.value);
+  };
 
-        let formData = new FormData();
-        formData.append('username', username);
-        formData.append('email', email);
-        formData.append('text', text);
+  const [text, setText] = useState('');
+  const onTextChange = e => {
+    setText(e.target.value);
+  };
 
-        let response = await fetch(apiUrls.base + 'create?developer=Nismoteika', {
-          crossDomain: true,
-          method: 'POST',
-          mimeType: 'multipart/form-data',
-          contentType: false,
-          processData: false,
-          dataType: "json",
-          body: formData,
-        });
-    
-        let result = await response.json();
-        if(result.status === 'ok') {
-          push('/');
-        } else {
-          console.log(result.message)
-        }
-      };
+  const onSubmit = e => {
+    e.preventDefault();
 
-    return (
-        <Grid
+    let formData = new FormData();
+    formData.append('username', username);
+    formData.append('email', email);
+    formData.append('text', text);
+
+    addTaskRequest({ formData });
+  };
+
+  return (
+    <Grid
       container
-      direction="row"
+      direction="column"
       justify="center"
       alignItems="center"
     >
-      <Grid item md={3}>
+      <Grid item md={4}>
         <h3 style={{ textAlign: "center" }}>Новая задача</h3>
-      <form
-        onSubmit={onSubmit}
-        className={classes.root}
-        autoComplete="off"
-      >
-        
-        <TextField
-          id="standard-basic"
-          label="Пользователь"
-          name="username"
-          value={username}
-          required
-          onChange={onUsernameChange}
-        />
-        <TextField
-          id="standard-basic"
-          label="E-mail"
-          type="email"
-          name="email"
-          required
-          value={email}
-          
-          onChange={onEmailChange}
-        />
-        <TextField
-          id="standard-basic"
-          label="Текст задачи"
-          name="text"
-          multiline
-          rowsMax={4}
-          value={text}
-          required
-          onChange={onTextChange}
-        />
+        <form
+          onSubmit={onSubmit}
+          className={classes.form}
+          autoComplete="off"
+        >
+          <TextField
+            id="username-add-task-field"
+            className={classes.marginBot}
+            label="Пользователь"
+            name="username"
+            value={username}
+            required
+            onChange={onUsernameChange}
+          />
+          <TextField
+            id="email-add-task-field"
+            className={classes.marginBot}
+            label="E-mail"
+            type="email"
+            name="email"
+            required
+            value={email}
 
-        <Button type="submit" variant="contained" color="primary">
-          Добавить
-        </Button>
-      </form>
+            onChange={onEmailChange}
+          />
+          <TextField
+            id="text-add-task-field"
+            label="Текст задачи"
+            className={classes.marginBot}
+            name="text"
+            multiline
+            rowsMax={4}
+            value={text}
+            required
+            onChange={onTextChange}
+          />
+
+          <GetAlert state={taskErrors} />
+
+          { taskSuccess &&
+            <Alert severity="success" className={classes.marginBot}>Задача обновлена</Alert>
+          }
+
+          <Button type="submit" variant="contained" color="primary" className={classes.submitBtn}>
+            Добавить
+          </Button>
+        </form>
       </Grid>
     </Grid>
-    );
+  );
 }
-  
-export default connect(null, { push })(AddTask);
+
+const mapStateToProps = store => ({
+  taskSuccess: store.tasks.success,
+  taskErrors: store.tasks.errors,
+})
+
+export default connect(mapStateToProps, { addTaskRequest })(AddTask);
