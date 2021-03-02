@@ -1,4 +1,4 @@
-import { push } from 'connected-react-router';
+import { push, replace } from 'connected-react-router';
 import * as types from '../constants/AuthTypes';
 import apiUrls from '../api';
 
@@ -16,12 +16,11 @@ export const userLoginFetch = user => {
       .then(resp => resp.json())
       .then(data => {
         if (data.status === 'ok') {
-          document.cookie = `auth_token=${data.message.token}`;
+          document.cookie = `auth_token=${data.message.token};`;
           dispatch(loginUser(data.message.token));
           dispatch(push('/'));
         } else {
-          console.log("lol")
-          dispatch(push({
+          dispatch(replace({
             pathname: '/login',
             state: { response: data.message }
           }))

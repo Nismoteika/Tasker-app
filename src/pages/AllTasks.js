@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { getTodos } from '../actions/TaskAction';
+import { getTasks } from '../actions/TaskAction';
 
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-function AllTasks({ totalTasks, tasks, getTodos }) {
+function AllTasks({ totalTasks, tasks, getTasks }) {
     const classes = useStyles();
 
     const [sortField, setSortField] = useState('username');
@@ -47,7 +47,7 @@ function AllTasks({ totalTasks, tasks, getTodos }) {
     const pageCount = parseInt(totalTasks/3)+1;
 
     useEffect(() => {
-        getTodos({page: page, sort_field: sortField, sort_direction: sortDirection});
+        getTasks({page: page, sort_field: sortField, sort_direction: sortDirection});
     }, [page, sortField, sortDirection])
 
     if(tasks === []) {
@@ -118,7 +118,7 @@ const mapStateToProps = (store) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-    getTodos: (getParams) => dispatch(getTodos(getParams))
+    getTasks: (getParams) => dispatch(getTasks(getParams))
 })
   
 export default connect(mapStateToProps, mapDispatchToProps)(AllTasks);
