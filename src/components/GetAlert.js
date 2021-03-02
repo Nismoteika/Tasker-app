@@ -8,15 +8,18 @@ function GetAlert({ state }) {
     for (const key in object) {
       if (Object.hasOwnProperty.call(object, key)) {
         const textAlert = object[key];
-        errors.push(<Alert severity="error" key={key}>{`${key}: ${textAlert}`}</Alert>);
+        errors.push(
+          <Grid item key={key}>
+            <Alert severity="error">{`${key}: ${textAlert}`}</Alert>
+          </Grid>
+        );
       }
     }
   }
 
-  const items = errors.map(item => (<Grid item>{ item }</Grid>));
   return (
     <Grid container style={{margin: 10}}>
-        { items }
+        { errors.map(item => item) }
     </Grid>
   )
 }

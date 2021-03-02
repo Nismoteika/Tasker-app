@@ -14,11 +14,11 @@ export default function todos(state = initialState, action) {
                 tasks: action.payload.tasks,
                 totalTasks: action.payload.totalTasks,
              }
-    case types.EDIT_TASK_SUCCESS:
+    case types.TASK_SUCCESS:
       return { ...state, 
                 success: action.payload.success
              }
-    case types.EDIT_TASK_ERROR:
+    case types.TASK_ERRORS:
       return { ...state, 
                 success: false,
                 errors: action.payload.errors
