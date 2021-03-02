@@ -38,7 +38,7 @@ function GetStatus({ statusCode }) {
       break;
   }
   return (
-    <Grid container>
+    <Grid container style={{margin: 10}}>
         {edited}
         {completed}
     </Grid>

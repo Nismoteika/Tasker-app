@@ -10,29 +10,30 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Alert from '@material-ui/lab/Alert';
 
-import apiUrls from '../api';
 import GetStatus from '../components/GetStatus';
+import GetAlert from '../components/GetAlert';
+import { editTaskRequest } from '../actions/TaskAction';
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    '& > *': {
-      display: 'flex',
-      flexFlow: 'column nowrap',
-      margin: theme.spacing(1),
-      width: '25ch'
-    }
-  },
-  formControl: {
+  form: {
+    display: 'flex',
+    flexFlow: 'column nowrap',
     margin: theme.spacing(1),
-    minWidth: 120
+  },
+  marginBot: {
+    marginBottom: theme.spacing(1),
   },
   editStatus: {
     color: 'grey',
+  },
+  submitBtn: {
+    margin: '0 auto',
   }
 }));
 
-function EditTask({ match, location, auth_token, push }) {
+function EditTask({ match, location, auth_token, editTaskSuccess, editTaskErrors, editTaskRequest }) {
   const classes = useStyles();
 
   const [taskText, setTaskText] = useState(location.state.objectTask.text);
@@ -45,11 +46,11 @@ function EditTask({ match, location, auth_token, push }) {
     setTaskStatus(e.target.value);
   };
 
-  const onSubmit = async e => {
+  const onSubmit = (e) => {
     e.preventDefault();
 
-    // task text is equal text in field || status already edited
     var localStatus = taskStatus;
+    // task text is equal text in field || status already edited
     if (location.state.objectTask.text !== taskText
       || location.state.objectTask.status === 1
       || location.state.objectTask.status === 11) {
@@ -60,28 +61,17 @@ function EditTask({ match, location, auth_token, push }) {
       }
     }
 
-    setTaskStatus(localStatus);
     let formData = new FormData();
-    formData.append('token', auth_token);
+    let cookie_token = document.cookie.match(/auth_token=(.*)[;]{0,1}/);
+    if (cookie_token) {
+      if (cookie_token[1].length > 0) {
+        formData.append('token', auth_token);
+      }
+    }
     formData.append('text', taskText);
     formData.append('status', localStatus);
 
-    let response = await fetch(`${apiUrls.base}edit/${match.params.id}?developer=Nismoteika`, {
-      crossDomain: true,
-      method: 'POST',
-      mimeType: 'multipart/form-data',
-      contentType: false,
-      processData: false,
-      dataType: "json",
-      body: formData,
-    });
-
-    let result = await response.json();
-    if (result.status === 'ok') {
-      push('/');
-    } else {
-      console.log('error');
-    }
+    editTaskRequest({formData: formData, idTask: match.params.id});
   };
 
   return (
@@ -91,16 +81,17 @@ function EditTask({ match, location, auth_token, push }) {
       justify="center"
       alignItems="center"
     >
-      <Grid item md={3}>
+      <Grid item md={4}>
         <h3 style={{ textAlign: "center" }}>Редактировать задачу {match.params.id}</h3>
         <form
           onSubmit={onSubmit}
-          className={classes.root}
+          className={classes.form}
           noValidate
           autoComplete="off"
         >
           <TextField
-            id="standard-basic"
+            id="text-task-field"
+            className={classes.marginBot}
             label="Текст задачи"
             name="taskText"
             multiline
@@ -108,7 +99,7 @@ function EditTask({ match, location, auth_token, push }) {
             value={taskText}
             onChange={onTaskTextChange}
           />
-          <FormControl className={classes.formControl}>
+          <FormControl className={classes.marginBot}>
             <InputLabel id="task-status-select-label">Статус</InputLabel>
             <Select
               labelId="task-status-select-label"
@@ -121,10 +112,22 @@ function EditTask({ match, location, auth_token, push }) {
             </Select>
           </FormControl>
 
-          <span>прошлое состояние:</span>
-          <GetStatus statusCode={location.state.objectTask.status} />
+          <Grid container justify="center" alignItems="center">
+            <Grid item>
+              <span>прошлое состояние:</span>
+            </Grid>
+            <Grid item>
+              <GetStatus statusCode={location.state.objectTask.status} />
+            </Grid>
+          </Grid>
 
-          <Button type="submit" variant="contained" color="primary">
+          <GetAlert state={editTaskErrors} />
+
+          { editTaskSuccess &&
+            <Alert severity="success" className={classes.marginBot}>Задача обновлена</Alert>
+          }
+
+          <Button type="submit" className={classes.submitBtn}  variant="contained" color="primary">
             Изменить задачу
           </Button>
         </form>
@@ -134,7 +137,9 @@ function EditTask({ match, location, auth_token, push }) {
 }
 
 const mapStateToProps = store => ({
-  auth_token: store.auth.currentToken
+  auth_token: store.auth.currentToken,
+  editTaskSuccess: store.tasks.success,
+  editTaskErrors: store.tasks.errors,
 });
 
-export default connect(mapStateToProps, { push })(EditTask);
+export default connect(mapStateToProps, { push, editTaskRequest })(EditTask);
